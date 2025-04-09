@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/operario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Operario"
+        android:textColor="@color/teal_700" />
+    <!-- Campo de texto para el correo electrónico -->
+    <EditText
+        android:id="@+id/emailEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Correo electrónico"
+        android:inputType="textEmailAddress" />
+
+    <!-- Campo de texto para la contraseña -->
+    <EditText
+        android:id="@+id/passwordEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Contraseña"
+        android:inputType="textPassword"
+        android:layout_marginTop="16dp" />
+
+    <!-- Botón de inicio de sesión -->
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Iniciar sesión"
+        android:layout_marginTop="24dp" />
+
+    <!-- Enlace para registrarse -->
+
+
+    <TextView
+        android:id="@+id/registerTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="¿No tienes una cuenta como operario? Regístrate aquí"
+        android:textColorLink="@color/purple_500"
+        android:layout_marginTop="16dp" />
+
+    <!-- ProgressBar para mostrar carga -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginTop="16dp" />
+    <!-- Dentro de tu LinearLayout/RelativeLayout, añade esto: -->
+
+    <!-- Copia de activity_main.xml pero con estos cambios -->
+    <TextView
+        android:id="@+id/userLoginTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Iniciar sesión como Usuario"
+        android:textColor="@color/teal_700"
+        android:layout_marginTop="8dp"
+        android:clickable="true"/>
+
+
+
+</LinearLayout>

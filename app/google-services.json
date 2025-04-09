@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "965235213981",
+    "firebase_url": "https://grua-express-native-default-rtdb.firebaseio.com",
+    "project_id": "grua-express-native",
+    "storage_bucket": "grua-express-native.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:965235213981:android:1284974de165e8f7edf674",
+        "android_client_info": {
+          "package_name": "com.anonymous.GruaExpressNative"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq_kWqO9yfWI9doj-CmDNolt-C7IDDM88"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:965235213981:android:6c783e9d31e4a5aeedf674",
+        "android_client_info": {
+          "package_name": "com.example.grua"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq_kWqO9yfWI9doj-CmDNolt-C7IDDM88"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
