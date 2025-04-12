@@ -9,8 +9,8 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.grua.prueba.ClienteHomeActivity
-import com.example.grua.prueba.RegisterActivity
+import com.example.grua.screens.ClienteHomeActivity
+import com.example.grua.screens.RegisterActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 

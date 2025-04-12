@@ -32,24 +32,24 @@
 
         <!-- Register Activity -->
         <activity
-            android:name=".prueba.RegisterActivity"
+            android:name=".screens.RegisterActivity"
             android:exported="false"
             android:label="@string/app_name" />
 
         <activity
-            android:name=".prueba.RegisterActivity2"
+            android:name=".screens.RegisterActivity2"
             android:label="Registro de Operador"/>
 
         <!-- Cliente Home Activity -->
         <activity
-            android:name=".prueba.ClienteHomeActivity"
+            android:name=".screens.ClienteHomeActivity"
             android:exported="false"
             android:label="Inicio Cliente"
             android:launchMode="singleTask"
             android:theme="@style/Theme.Grua" />
 
         <activity
-            android:name=".prueba.OperarioHomeActivity"
+            android:name=".screens.OperarioHomeActivity"
             android:exported="false"
             android:label="Inicio Operario"
             android:launchMode="singleTask"
