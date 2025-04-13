@@ -75,7 +75,7 @@ class RegisterActivity2 : AppCompatActivity() {
                     )
 
                     // Guardar en Firestore
-                    db.collection("usuarios").document(userId)
+                    db.collection("operario").document(userId)
                         .set(userData)
                         .addOnSuccessListener {
                             Toast.makeText(

@@ -80,7 +80,7 @@ class MainActivity2 : AppCompatActivity() {
 
     private fun verifyUserType(userId: String) {
         showLoading(true)
-        db.collection("usuarios").document(userId)
+        db.collection("operario").document(userId)
             .get()
             .addOnSuccessListener { document ->
                 showLoading(false)

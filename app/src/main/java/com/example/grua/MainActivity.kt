@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun verifyUserType(userId: String) {
         showLoading(true)
-        db.collection("usuarios").document(userId)
+        db.collection("cliente").document(userId)
             .get()
             .addOnSuccessListener { document ->
                 showLoading(false)
