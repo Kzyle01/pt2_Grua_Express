@@ -28,18 +28,21 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun setupUI() {
         binding.registerButton.setOnClickListener {
+            val name = binding.nameEditText.text.toString().trim()
             val email = binding.emailEditText.text.toString().trim()
             val password = binding.passwordEditText.text.toString().trim()
             val confirmPassword = binding.confirmPasswordEditText.text.toString().trim()
 
+
             // Validaciones
             when {
+                name.isEmpty() -> showError("Ingrese su nombre completo")
                 email.isEmpty() -> showError("Ingrese un correo electrónico")
                 !isValidEmail(email) -> showError("Correo electrónico no válido")
                 password.isEmpty() -> showError("Ingrese una contraseña")
                 password.length < 6 -> showError("La contraseña debe tener al menos 6 caracteres")
                 password != confirmPassword -> showError("Las contraseñas no coinciden")
-                else -> registerUser(email, password, "users") // Tipo de usuario fijo como "users"
+                else -> registerUser(name,email, password, "users") // Tipo de usuario fijo como "users"
             }
         }
 
@@ -52,7 +55,7 @@ class RegisterActivity : AppCompatActivity() {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
-    private fun registerUser(email: String, password: String, userType: String) {
+    private fun registerUser(name: String, email: String, password: String, userType: String) {
         binding.progressBar.visibility = View.VISIBLE
         binding.registerButton.isEnabled = false
 
@@ -68,9 +71,10 @@ class RegisterActivity : AppCompatActivity() {
 
                     // Crear objeto con solo los datos requeridos
                     val userData = hashMapOf(
+                        "nombre" to name,
                         "correo" to email,
                         "tipoUsuario" to userType, // Siempre "users"
-                        "fechaRegistro" to System.currentTimeMillis()
+                        "fechaRegistro" to java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(java.util.Date(System.currentTimeMillis()))
                     )
 
                     // Guardar en Firestore

@@ -55,7 +55,7 @@
             android:launchMode="singleTask"
             android:theme="@style/Theme.Grua" />
 
-        <activity
+         <activity
             android:name=".screens.OperarioHomeActivity"
             android:exported="false"
             android:label="Inicio Operario"

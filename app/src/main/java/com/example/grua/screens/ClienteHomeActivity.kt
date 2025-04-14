@@ -1,124 +1,57 @@
 package com.example.grua.screens
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.example.grua.R
-import com.mapbox.geojson.Point
-import com.mapbox.maps.*
-import com.mapbox.maps.plugin.annotation.annotations
-import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager
-import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
-import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
-import com.mapbox.maps.plugin.locationcomponent.location
+import com.example.grua.fragments.clientHome
+import com.example.grua.fragments.clientList
+import com.example.grua.fragments.clientProfile
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
 
 class ClienteHomeActivity : AppCompatActivity() {
 
-    private lateinit var mapView: MapView
-    private lateinit var pointAnnotationManager: PointAnnotationManager
-    private lateinit var locationListener: (Point) -> Unit
-
-    companion object {
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
-    }
+    private lateinit var auth: FirebaseAuth
+    private lateinit var bottomNavigationView: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cliente_home)
 
-        mapView = findViewById(R.id.mapView)
+        auth = FirebaseAuth.getInstance()
 
-        if (hasLocationPermission()) {
-            initMap()
-        } else {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE
-            )
+        if (auth.currentUser == null) {
+            Toast.makeText(this, "Sesión no válida", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
+        bottomNavigationView = findViewById(R.id.bottom_navigation)
+
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_home -> replaceFragment(clientHome())
+                R.id.nav_list -> replaceFragment(clientList())
+                R.id.nav_profile -> replaceFragment(clientProfile())
+            }
+            true
+        }
+
+        // Cargar el fragmento inicial
+        if (savedInstanceState == null) {
+            bottomNavigationView.selectedItemId = R.id.nav_home
         }
     }
 
-    private fun hasLocationPermission(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
+    private fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .commit()
     }
 
-    private fun initMap() {
-        mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS) { _ ->
-            enableUserLocation()
-            pointAnnotationManager = mapView.annotations.createPointAnnotationManager()
-        }
-    }
-
-    private fun enableUserLocation() {
-        val locationComponentPlugin = mapView.location
-        locationComponentPlugin.updateSettings {
-            enabled = true
-            pulsingEnabled = false // Deshabilitar el parpadeo
-        }
-
-        // Definir y almacenar el listener
-        locationListener = { point ->
-            val cameraOptions = CameraOptions.Builder()
-                .center(point)
-                .zoom(14.0)
-                .build()
-            mapView.getMapboxMap().setCamera(cameraOptions)
-
-            addMarker(point)
-
-            // Quitar el listener después de usarlo una vez
-            locationComponentPlugin.removeOnIndicatorPositionChangedListener(locationListener)
-        }
-
-        // Agregar el listener
-        locationComponentPlugin.addOnIndicatorPositionChangedListener(locationListener)
-    }
-
-    private fun addMarker(point: Point) {
-        try {
-            val pointAnnotationOptions = PointAnnotationOptions()
-                .withPoint(point)
-                .withIconSize(1.0)
-
-            pointAnnotationManager.create(pointAnnotationOptions)
-        } catch (e: Exception) {
-            Log.e("Mapbox", "Error al añadir marcador", e)
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>, grantResults: IntArray
-    ) {
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE &&
-            grantResults.isNotEmpty() &&
-            grantResults[0] == PackageManager.PERMISSION_GRANTED
-        ) {
-            initMap()
-        } else {
-            Log.e("Mapbox", "Permiso de ubicación denegado")
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        mapView.onStart()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        mapView.onStop()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        mapView.onDestroy()
+    override fun onBackPressed() {
+        moveTaskToBack(true)
     }
 }
