@@ -3,6 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.grua">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -14,6 +18,9 @@
         android:theme="@style/Theme.Grua"
         tools:targetApi="31">
 
+        <meta-data
+            android:name="com.mapbox.maps.token"
+            android:value="TU_MAPBOX_ACCESS_TOKEN" />
         <!-- Main Activity - Punto de entrada -->
         <activity
             android:name=".MainActivity"
