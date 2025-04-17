@@ -1,33 +1,41 @@
 package com.example.grua.fragments
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.grua.R
-import com.mapbox.maps.MapView
-import android.Manifest
-import android.content.pm.PackageManager
-import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import com.example.grua.R
+import com.example.grua.repositories.LocationRepository
+import com.example.grua.repositories.UserRepository
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 import com.mapbox.geojson.Point
-import com.mapbox.maps.*
+import com.mapbox.maps.CameraOptions
+import com.mapbox.maps.MapView
 import com.mapbox.maps.plugin.annotation.annotations
+import com.mapbox.maps.plugin.annotation.generated.PointAnnotation
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
 import com.mapbox.maps.plugin.locationcomponent.location
-
-
+import com.mapbox.maps.plugin.LocationPuck2D
 
 class clientHome : Fragment() {
 
     private lateinit var mapView: MapView
     private lateinit var pointAnnotationManager: PointAnnotationManager
     private lateinit var locationListener: (Point) -> Unit
+    private lateinit var realtimeDbRef: DatabaseReference
+    private var carMarker: PointAnnotation? = null
+
+    private val userRepository = UserRepository()
+    private lateinit var locationRepository: LocationRepository
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
@@ -37,14 +45,12 @@ class clientHome : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Infla el layout del fragment
         return inflater.inflate(R.layout.fragment_client_home, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Inicializa el MapView desde la vista inflada
         mapView = view.findViewById(R.id.mapView)
 
         if (hasLocationPermission()) {
@@ -61,50 +67,112 @@ class clientHome : Fragment() {
         }
     }
 
-    private fun hasLocationPermission(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-    }
-
     private fun initMap() {
-        mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS) {
-            enableUserLocation()
+        val styleUri = "mapbox://styles/kzyle/cm9hsmsgv00ku01r3d9dp2n97"
+        mapView.getMapboxMap().loadStyleUri(styleUri) { style ->
+
+            // Verifica si la imagen "car" existe en el estilo
+            val imageExists = style.getStyleImage("car") != null
+            Log.d("Mapbox", "¿La imagen 'car' existe?: $imageExists")
+
+            if (!imageExists) {
+                Log.e("Mapbox", "La imagen 'car' no se encontró en el estilo.")
+            }
+
             pointAnnotationManager = mapView.annotations.createPointAnnotationManager()
+            locationRepository = LocationRepository(pointAnnotationManager)
+
+            enableUserLocation()
+            listenLocations()
         }
     }
 
     private fun enableUserLocation() {
         val locationComponentPlugin = mapView.location
+
+        // Ocultar el punto azul
         locationComponentPlugin.updateSettings {
             enabled = true
             pulsingEnabled = false
+            locationPuck = LocationPuck2D(
+                topImage = null,
+                bearingImage = null,
+                shadowImage = null
+            )
         }
 
         locationListener = { point ->
+            // Mover la cámara
             val cameraOptions = CameraOptions.Builder()
                 .center(point)
                 .zoom(14.0)
                 .build()
             mapView.getMapboxMap().setCamera(cameraOptions)
-            addMarker(point)
-            locationComponentPlugin.removeOnIndicatorPositionChangedListener(locationListener)
+
+            // Mover o crear el marcador personalizado "car"
+            locationRepository.moveCarMarker(point)
+
+            // Actualizar ubicación en Firebase
+            val uid = FirebaseAuth.getInstance().currentUser?.uid
+            if (uid != null) {
+                locationRepository.updateUserLocation(
+                    uid,
+                    point.latitude(),
+                    point.longitude()
+                ) { success ->
+                    if (success) {
+                        Log.d("ClientHome", "Ubicación actualizada correctamente para $uid")
+                    } else {
+                        Log.e("ClientHome", "Error al actualizar ubicación para $uid")
+                    }
+                }
+            }
         }
 
         locationComponentPlugin.addOnIndicatorPositionChangedListener(locationListener)
     }
 
-    private fun addMarker(point: Point) {
-        try {
-            val pointAnnotationOptions = PointAnnotationOptions()
-                .withPoint(point)
-                .withIconSize(1.0)
 
-            pointAnnotationManager.create(pointAnnotationOptions)
-        } catch (e: Exception) {
-            Log.e("Mapbox", "Error al añadir marcador", e)
-        }
+
+    private fun listenLocations() {
+        val currentUid = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+        realtimeDbRef = FirebaseDatabase.getInstance().getReference("locations")
+        realtimeDbRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                snapshot.children.forEach { userSnapshot ->
+                    val uid = userSnapshot.key
+                    if (uid != null && uid != currentUid) {
+                        val lat = userSnapshot.child("latitude").getValue(Double::class.java)
+                        val lng = userSnapshot.child("longitude").getValue(Double::class.java)
+                        if (lat != null && lng != null) {
+                            val point = Point.fromLngLat(lng, lat)
+                            Log.d("ClientHome", "Ubicación recibida de $uid en $point")
+
+                            userRepository.getUserProfile(uid,
+                                onSuccess = { name, photoUrl ->
+                                    locationRepository.addUserMarker(uid, point, name, photoUrl)
+                                },
+                                onFailure = { exception ->
+                                    Log.e("Firestore", "Error obteniendo perfil: $exception")
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseDB", "Error al leer ubicaciones: ${error.message}")
+            }
+        })
+    }
+
+    private fun hasLocationPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onStart() {
@@ -122,7 +190,6 @@ class clientHome : Fragment() {
         mapView.onDestroy()
     }
 
-    // Usa esto si estás solicitando permisos desde un Fragment (recomendado)
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
