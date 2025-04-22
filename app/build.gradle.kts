@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
     id("com.google.gms.google-services") // Plugin de Firebase
+    id("kotlin-kapt")
 }
 
 android {
@@ -81,5 +82,6 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.mapbox.maps:android:11.3.0")
-
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    kapt("com.github.bumptech.glide:compiler:4.16.0")
 }

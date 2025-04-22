@@ -1,136 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
-    <!-- Foto de perfil circular -->
-    <ImageView
-        android:id="@+id/imgProfilePicture"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="40dp"
-        android:contentDescription="@string/profile_picture"
-        android:scaleType="centerCrop"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="8dp"
-        android:src="@drawable/baseline_person_24"
-        />
-
-    <!-- Forma circular para la ImageView
-         O bien puede ser un shape, o usar una librería (Glide, Coil) con CircleCrop -->
-    <!-- *Ejemplo de convertir en círculo (si usas un shape o un library)* -->
-
-    <!-- Nombre de usuario (parte superior) -->
-    <TextView
-        android:id="@+id/tvProfileNameTop"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:textColor="@android:color/black"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/imgProfilePicture"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:text="test10" />
+        android:padding="16dp">
 
-    <!-- Bloque de calificación y años, en un Horizontal LinearLayout para ejemplo -->
-    <LinearLayout
-        android:id="@+id/llRatings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/tvProfileNameTop"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        <!-- Imagen de perfil circular -->
+        <ImageView
+            android:id="@+id/imgProfilePicture"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:contentDescription="@string/profile_picture"
+            android:scaleType="centerCrop"
+            android:src="@drawable/baseline_person_24"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Calificación -->
+        <!-- Nombre (encima) -->
         <TextView
-            android:id="@+id/tvProfileRating"
+            android:id="@+id/tvProfileNameTop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="4.94 Calificación"
-            android:textSize="14sp"
+            android:layout_marginTop="8dp"
+            android:text="Nombre"
             android:textColor="@android:color/black"
-            android:drawableLeft="@drawable/baseline_star_rate_24"
-            android:drawablePadding="4dp" />
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/imgProfilePicture"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Separador pequeño -->
-        <View
-            android:layout_width="16dp"
-            android:layout_height="match_parent" />
-
-        <!-- Años -->
-        <TextView
-            android:id="@+id/tvProfileYears"
+        <!-- Línea horizontal: Calificación y Años -->
+        <LinearLayout
+            android:id="@+id/llRatings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2 Años"
-            android:textSize="14sp"
-            android:textColor="@android:color/black" />
-    </LinearLayout>
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/tvProfileNameTop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-    <!-- Card con datos -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardUserData"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginHorizontal="24dp"
-        android:padding="16dp"
-        app:cardCornerRadius="8dp"
-        app:cardUseCompatPadding="true"
-        app:layout_constraintTop_toBottomOf="@+id/llRatings"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <!-- Nombre abajo -->
             <TextView
-                android:id="@+id/tvProfileName"
-                android:layout_width="match_parent"
+                android:id="@+id/tvProfileRating"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="test10"
+                android:text="0.0 Calificación"
+                android:textSize="14sp"
                 android:textColor="@android:color/black"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="4dp"/>
+                android:drawableLeft="@drawable/baseline_star_rate_24"
+                android:drawablePadding="4dp" />
 
-            <!-- Email -->
+            <View
+                android:layout_width="16dp"
+                android:layout_height="match_parent" />
+
             <TextView
-                android:id="@+id/tvProfileEmail"
-                android:layout_width="match_parent"
+                android:id="@+id/tvProfileYears"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="test10@test10.com"
-                android:textColor="@android:color/black"
-                android:textSize="14sp" />
-
+                android:text="0 Años"
+                android:textSize="14sp"
+                android:textColor="@android:color/black" />
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+        <!-- Tarjeta con datos -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardUserData"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:padding="16dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintTop_toBottomOf="@+id/llRatings"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-    <!-- Botón de Cerrar sesión -->
-    <Button
-        android:id="@+id/btnLogout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/btn_cerrar_sesion"
-        android:textColor="@android:color/white"
-        android:backgroundTint="@color/red"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="16dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <!-- Nombre abajo -->
+                <TextView
+                    android:id="@+id/tvProfileName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Nombre completo"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="4dp" />
+
+                <!-- Email -->
+                <TextView
+                    android:id="@+id/tvProfileEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="correo@example.com"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Botón Cerrar sesión -->
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/btn_cerrar_sesion"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/red"
+            android:textSize="15sp"
+            app:layout_constraintTop_toBottomOf="@+id/cardUserData"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
